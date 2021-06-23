@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Polylets reader</title>
+    <!-- Import Styles -->
+    <link rel="stylesheet" href="stylesheet.css" />
+    <!-- Import Vue.js -->
+    <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+
+<body>
+    <div class="navigationBar">
+        <a href="../viewer">Viewer</a>
+        <a href="../editor">Editor</a>
+        <a>Reader</a>
+        <a href="../table">Table</a>
+        <a href="../canvas">Canvas</a>
+    </div>
+
+    <div style="margin:0px 0px 0px 10px">
+        <h1>Document Reader</h1>
+        <input class="button" id="myfiles" type="file" accept=".html">
+    </div>
+
+    <div id="document" class="document"></div>
+
+    <div id="referenceObjects"></div>
+
+    <ul id="snaptarget" class="annotationBar"></ul>
+    <!-- <div id="snaptarget" class="annotationBar"></div> -->
+
+    <!-- <script src="script.js"></script> -->
+    <script src="script2.js"></script>
+
+</body>
+
+</html>

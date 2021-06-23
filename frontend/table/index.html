@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- Include stylesheet -->
+<title>Polylets table</title>
+
+
+<script src=”./REDIPS_drag/redips-drag-min.js”></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@revolist/revogrid@latest/dist/revo-grid/revo-grid.js"></script>
+
+<body>
+
+    <div class="navigationBar">
+        <a href="../viewer">Viewer</a>
+        <a href="../editor">Editor</a>
+        <a href="../reader">Reader</a>
+        <a>Table</a>
+        <a href="../canvas">Canvas</a>
+    </div>
+
+    <div style="margin:0px 0px 0px 10px">
+        <h1>Document Table</h1>
+    </div>
+
+
+    <div class="editor">
+
+        <button class="exporter">Export to Editor</button>
+
+        <div id="annotations" class="annotation" ondragover="p(event)" ondrop="drop(event)">
+            <p style="border: 1px solid #d8d8d8;"></p>
+        </div>
+
+        
+
+        <!-- Create the editor container -->
+        <div  class="document" ondragover="p(event)">
+          
+
+          <div class="table-line">
+          
+          <div class="table-form">
+            
+            <table class="tbl" id="tbl"> 
+              <colgroup>
+              </colgroup>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+
+          </div> 
+
+        
+        <div class="new-column">
+          <p></p>
+        </div>
+
+      </div>
+      
+        <div class="new-row">
+          <p></p>
+        </div>
+        
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

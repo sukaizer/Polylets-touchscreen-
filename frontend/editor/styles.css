@@ -1,0 +1,184 @@
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  font-weight: 300;
+  /* display: flex; */
+}
+
+.navigationBar {
+  padding: 5px;
+  text-align: center;
+}
+
+.navigationBar a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.document {
+  width: 55%;
+  height: 800px;
+  margin: 10px 10px;
+  border: 1px solid #d8d8d8;
+  overflow-y: auto; /* this makes the div scrollable  */
+  float: left;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+}
+
+.docName {
+  font-weight: bold;
+}
+
+.annotation {
+  background-color: rgb(243, 236, 236);
+  width: 35%;
+  height: 800px;
+  margin: 10px 10px;
+  float: left;
+  font-size: 15px;
+  padding: 10px 20px 5px 5px;
+  border-radius: 10px;
+  overflow: scroll;
+}
+
+.annot-note {
+  font-style: italic;
+  border: 1px dashed #4d4a4a;
+  padding: 5px 20px;
+  border-radius: 4px;
+  text-overflow: clip;
+}
+
+.annot-pass {
+  width: 80%;
+  height: 10 0%;
+  font-size: 17x;
+}
+
+.element {
+  text-align: justify;
+  text-overflow: ellipsis;
+  margin: 0px 0px 10px 40px;
+  padding: 5px 20px;
+  border: 1px solid #d8d8d8;
+  cursor: move;
+  border-radius: 12px;
+  width: 85%;
+  height: 180px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  overflow-y: auto;
+}
+
+.hightlighted-element {
+  text-align: justify;
+  margin: 20px 5px 5px 10px;
+  padding: 5px 20px;
+  border: 1px solid #d8d8d8;
+  border-radius: 12px;
+  width: 90%;
+  height: 180px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  display: inline-block;
+
+  background-color: #a7e4fc;
+
+  transition: transform 250ms;
+  transition-timing-function: ease-out;
+  transform: scale(1.1, 1.2);
+}
+
+.button {
+  /* border-radius: 15px;
+  background-color: #e80505;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 20px 20px;
+  cursor: pointer; */
+
+  background-color: rgb();
+  /* color: #ffffff; */
+  padding: 5px 10px;
+  margin: 5px 5px 10px 5px;
+  cursor: pointer;
+  border-radius: 15px;
+  border: 1px solid #999999;
+}
+
+.button:hover {
+  /* background-color: #ffffff;
+  box-shadow: 0px 15px 20px rgba(219, 26, 12, 0.4);
+  color: #e80505; */
+
+  background-color: rgb(88, 88, 88);
+  color: #ffffff;
+  padding: 5px 10px;
+  border: 1px solid #999999;
+}
+
+.button:disabled {
+  /* cursor: not-allowed;
+  background-color: #887474;
+  box-shadow: 0px 0px 0px rgba(219, 26, 12, 0.4);
+  color: #887474;
+  transform: translateY(0px); */
+
+  cursor: not-allowed;
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #8f8f8f;
+}
+
+.button-bar {
+  border: 1px solid #0066cc;
+  background-color: #0099cc;
+  color: #ffffff;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 5px 10px 5px;
+  cursor: pointer;
+  border-radius: 15px;
+  font-size: 16px;
+}
+
+.note {
+  background-color: yellow;
+}
+
+.note .note-content {
+  width: 100%;
+  height: 75px; /* 100px - 15px (draghandle) - 2*5px (padding) */
+  padding: 5px;
+  overflow: scroll;
+}
+
+#content .note {
+  position: absolute; /* This makes the note float over the container */
+  width: 150px;
+  height: 100px;
+}
+
+#sidebar .note {
+  margin: 10px;
+  height: 100px;
+}
+
+/* for managing drag-and-drop */
+.note .draghandle {
+  width: 100%;
+  height: 15px;
+  background-color: lightsalmon;
+  cursor: grab;
+}
+
+#sidebar {
+  float: right; /* This causes the sidebar to move to the right */
+  width: 258px; /* We need to set the width whenever we float an element */
+  height: 500px;
+  background-color: lightgrey;
+  padding: 5px;
+}

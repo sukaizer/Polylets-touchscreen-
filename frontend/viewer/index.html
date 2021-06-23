@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Polylets viewer</title>
+    <!-- Import Styles -->
+    <link rel="stylesheet" href="styles-whiteTheme.css" />
+    <!-- Import Vue.js -->
+    <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+
+<body>
+    <div class="navigationBar">
+        <a>Viewer</a>
+        <a href="../editor/">Editor</a>
+        <a href="../reader">Reader</a>
+        <a href="../table">Table</a>
+        <a href="../canvas">Canvas</a>
+    </div>
+    <div id="app">
+        <!-- basic buttons for switching documents -->
+        <div style="margin:0px 0px 0px 10px">
+            <h1>Document Viewer</h1>
+            <files-switcher class="button-bar" ref="files" @current-file="setFile"></files-switcher>
+        </div>
+        <br>
+        <!-- div containing the main document -->
+        <div id="content" class="document" @mouseover="setDisable"></div>
+        <div id="container" class="annotationBar">
+            <button class="button" :disabled="isDisabled" @click="addAnnotation() ; $refs.files.updateFile()">NOTE</button>
+            <template v-if="this.notes.length > 0">
+                <button class="button" @click="sendToServer">SAVE</button>
+            </template>
+            <span class = "saved" :disable="true"> {{ savedProperty }} </span>
+
+            <!-- here goes the template -->
+            <annotation-list v-for="note in notes" :note="note" :current="currentFile" @update="editNote" @selection="reselect" @del="deletePassage" @drag="dragPassage"></annotation-list>
+        </div>
+    </div>
+
+    <script src="./prototype.js"></script>
+    <script src="components/annotation-list.js"></script>
+    <script src="components/files-switcher.js"></script>
+    
+    <script src="script.js">
+    </script>
+
+</body>
+
+</html>
