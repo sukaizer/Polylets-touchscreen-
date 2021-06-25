@@ -982,6 +982,7 @@ function handleStart(evt) {
 }
 
 function handleEnd(evt) {
+  evt.preventDefault();
   var path = evt.path;
   path.forEach((element) => {
     try {
@@ -1005,6 +1006,7 @@ function handleEnd(evt) {
 }
 
 function handleMove(evt) {
+  evt.preventDefault();
   console.log("move");
   clientX = evt.touches[0].clientX;
   clientY = evt.touches[0].clientY;
@@ -1014,5 +1016,6 @@ function handleMove(evt) {
 }
 
 function handleCancel(evt) {
+  evt.preventDefault();
   console.log("cancel");
 }
