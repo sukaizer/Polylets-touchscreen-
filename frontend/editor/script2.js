@@ -290,6 +290,12 @@ function createPassage(data) {
   passage.appendChild(quote);
   passage.appendChild(annotationArea);
   allPassages.push(passage);
+
+  passage.addEventListener("touchstart", handleStart);
+  passage.addEventListener("touchend", handleEnd);
+  passage.addEventListener("touchcancel", handleCancel);
+  passage.addEventListener("touchmove", handleMove);
+
   return passage;
 }
 
@@ -802,25 +808,6 @@ class DragAndDropInteraction {
     let movement = this.getMovement();
     console.log(movement);
     switch (movement) {
-      case "content->content": // move note withing the content pane
-        // simply move the note
-        moveElem(
-          $(this.draggedElem),
-          ev.screenX - this.startPos.x,
-          ev.screenY - this.startPos.y
-        );
-        break;
-
-      case "content->sidebar": // move note from content pane to sidebar
-        // remove note from content and append it to sidebar
-        moveNoteToSidebar(this.draggedElem, this.dropZone, ev, this);
-        break;
-
-      case "sidebar->content": // move note from sidebar to content pane
-        // remove note from sidebar and append it to panel
-        moveNoteToContent(this.draggedElem, this.dropZone, ev, this);
-        break;
-
       case "sidebar->editor": // move note from sidebar to content pane
         // remove note from sidebar and append it to panel
         //moveNoteToContent(this.draggedElem, this.dropZone, ev, this)
@@ -954,3 +941,50 @@ $(function () {
     dnd ? dnd.drop(ev) : console.warn("spurious drop event")
   );
 });
+
+let contentTransfer;
+
+function getCursorPosition() {
+  var range = quill.getSelection();
+  if (range) {
+    if (range.length == 0) {
+      console.log("User cursor is at index", range.index);
+      return range.index;
+    } else {
+      var text = quill.getText(range.index, range.length);
+      console.log("User has highlighted: ", text);
+    }
+  } else {
+    console.log("User cursor is not in editor");
+  }
+}
+
+function handleStart(evt) {
+  evt.preventDefault();
+  console.log("touch");
+}
+
+function handleStart(evt) {
+  console.log("touch start");
+}
+
+function handleEnd(evt) {
+  console.log("touch end");
+  var path = evt.path;
+  var passage;
+  path.forEach((element) => {
+    try {
+      if (element.getAttribute("class") == "passage draggable")
+        passage = element;
+    } catch (error) {}
+  });
+  moveNoteToEditor(passage);
+}
+
+function handleMove(evt) {
+  console.log("move");
+}
+
+function handleCancel(evt) {
+  console.log("cancel");
+}
