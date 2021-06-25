@@ -951,8 +951,8 @@ $(function () {
 });
 
 //regarding touch events
-let floatingEl;
-let passage;
+var floatingEl;
+var passage;
 
 function handleStart(evt) {
   evt.preventDefault();
@@ -960,31 +960,47 @@ function handleStart(evt) {
   path.forEach((element) => {
     try {
       if (element.getAttribute("class") == "passage draggable") {
-        passage = element;
         floatingEl = element.cloneNode(true);
       }
     } catch (error) {}
   });
-  document.body.appendChild(floatingEl);
+  floatingEl.removeEventListener("touchstart", handleStart);
+  floatingEl.removeEventListener("touchend", handleEnd);
+  floatingEl.removeEventListener("touchcancel", handleCancel);
+  floatingEl.removeEventListener("touchmove", handleMove);
   floatingEl.style.position = "absolute";
-  floatingEl.style.top = evt.clientY;
-  floatingEl.style.left = evt.clientX;
-}
-
-function handleStart(evt) {
-  console.log("touch start");
+  clientX = evt.touches[0].clientX;
+  clientY = evt.touches[0].clientY;
+  floatingEl.style.top = clientY + "px";
+  floatingEl.style.left = clientX + "px";
+  document.body.appendChild(floatingEl);
 }
 
 function handleEnd(evt) {
-  console.log("touch end");
+  var path = evt.path;
+  path.forEach((element) => {
+    try {
+      if (element.getAttribute("class") == "passage draggable") {
+        passage = element;
+      }
+    } catch (error) {}
+  });
   moveNoteToEditor(passage);
   floatingEl.remove();
+  floatingEl = null;
 }
 
 function handleMove(evt) {
   console.log("move");
-  floatingEl.style.top = evt.clientY;
-  floatingEl.style.left = evt.clientX;
+  clientX = evt.touches[0].clientX;
+  clientY = evt.touches[0].clientY;
+  console.log("touchpos : " + clientX + "  " + clientY);
+  floatingEl.style.top = clientY + "px";
+  floatingEl.style.left = clientX + "px";
+
+  console.log(
+    "floatingdiv : " + floatingEl.style.top + " " + floatingEl.style.left
+  );
 }
 
 function handleCancel(evt) {
