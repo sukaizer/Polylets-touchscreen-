@@ -192,9 +192,10 @@ function createPassage(data) {
   green.style.top = cont.offsetTop - 162 + "px";
   green.style.width = 22 + "px";
   green.style.height = 22 + "px";
-  green.onclick = () => {
+  green.onclick = (e) => {
     passage.setAttribute("green", "green");
     greenEff.style.visibility = "visible";
+    e.stopPropagation();
   };
 
   const blue = document.createElement("button");
@@ -204,9 +205,10 @@ function createPassage(data) {
   blue.style.top = cont.offsetTop - 120 + "px";
   blue.style.width = 22 + "px";
   blue.style.height = 22 + "px";
-  blue.onclick = () => {
+  blue.onclick = (e) => {
     passage.setAttribute("blue", "blue");
     blueEff.style.visibility = "visible";
+    e.stopPropagation();
   };
 
   const red = document.createElement("button");
@@ -216,9 +218,10 @@ function createPassage(data) {
   red.style.top = cont.offsetTop - 120 + "px";
   red.style.width = 22 + "px";
   red.style.height = 22 + "px";
-  red.onclick = () => {
+  red.onclick = (e) => {
     passage.setAttribute("red", "red");
     redEff.style.visibility = "visible";
+    e.stopPropagation();
   };
 
   const greenEff = document.createElement("button");
@@ -230,16 +233,18 @@ function createPassage(data) {
 
   const blueEff = document.createElement("button");
   blueEff.setAttribute("class", "tag-blue-eff");
-  blueEff.onclick = () => {
+  blueEff.onclick = (e) => {
     passage.setAttribute("blue", "none");
     blueEff.style.visibility = "hidden";
+    e.stopPropagation();
   };
 
   const redEff = document.createElement("button");
   redEff.setAttribute("class", "tag-red-eff");
-  redEff.onclick = () => {
+  redEff.onclick = (e) => {
     passage.setAttribute("red", "none");
     redEff.style.visibility = "hidden";
+    e.stopPropagation();
   };
 
   draghandle.appendChild(draghandlebutton);
@@ -974,6 +979,8 @@ function handleStart(evt) {
   floatingEl.removeEventListener("touchcancel", handleCancel);
   floatingEl.removeEventListener("touchmove", handleMove);
   floatingEl.style.position = "absolute";
+  floatingEl.style.opacity = "0.7";
+  floatingEl.style.transform = "scale(0.5)";
   clientX = evt.touches[0].clientX;
   clientY = evt.touches[0].clientY;
   floatingEl.style.top = clientY - floatingEl.style.height + "px";
