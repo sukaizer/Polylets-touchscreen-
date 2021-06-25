@@ -983,7 +983,7 @@ function handleStart(evt) {
   floatingEl.removeEventListener("touchmove", handleMove);
   floatingEl.style.position = "absolute";
   floatingEl.style.opacity = "0.7";
-  floatingEl.style.transform = "scale(0.5)";
+  floatingEl.style.transform = "scale(1)";
   clientX = evt.touches[0].clientX;
   clientY = evt.touches[0].clientY;
   floatingEl.style.top = clientY - floatingEl.style.height + "px";
