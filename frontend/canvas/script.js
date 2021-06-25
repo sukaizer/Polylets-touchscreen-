@@ -5,7 +5,7 @@ const files = [];
 getData();
 
 // create a passage object which will be added to the sidebar and sets the listeners
-function createPassage(data) {
+function createPassage(data, touch) {
   const passage = document.createElement("div");
   passage.setAttribute("green", "none");
   passage.setAttribute("blue", "none");
@@ -86,6 +86,19 @@ function createPassage(data) {
   passage.appendChild(quote);
   passage.appendChild(annotationArea);
   allPassages.push(passage);
+
+  if (touch) {
+    draghandle.addEventListener("touchstart", canvasStart);
+    draghandle.addEventListener("touchend", canvasEnd);
+    draghandle.addEventListener("touchcancel", canvasCancel);
+    draghandle.addEventListener("touchmove", canvasMove);
+  } else {
+    draghandle.addEventListener("touchstart", handleStart);
+    draghandle.addEventListener("touchend", handleEnd);
+    draghandle.addEventListener("touchcancel", handleCancel);
+    draghandle.addEventListener("touchmove", handleMove);
+  }
+
   return passage;
 }
 
@@ -144,7 +157,7 @@ async function getData() {
   const data = await res.json();
   var i = 100;
   for (item of data) {
-    document.getElementById("sidebar").append(createPassage(item));
+    document.getElementById("sidebar").append(createPassage(item, false));
     i += 10;
   }
 }
@@ -244,15 +257,6 @@ function moveElem(elem, deltaX, deltaY) {
 function moveNoteToContent(note, sidebar, ev, dnd) {
   // Compute destination position
   // NOTE: this does account for scrolling of content, but not of scrolling in a parent element
-  let offset = $("#snaptarget").offset();
-  let scroll = {
-    x: $("#snaptarget").scrollLeft(),
-    y: $("#snaptarget").scrollTop(),
-  };
-  let x =
-    ev.originalEvent.clientX - offset.left + scroll.x - dnd.cursorOffset.x;
-  let y = ev.originalEvent.clientY - offset.top + scroll.y - dnd.cursorOffset.y;
-
   // Copy note and append it to sidebar
   var data = {
     id: note.getAttribute("id"),
@@ -266,7 +270,29 @@ function moveNoteToContent(note, sidebar, ev, dnd) {
   };
   console.log(data);
 
-  $("#snaptarget").append(createPassage(data));
+  $("#snaptarget").append(createPassage(data, false));
+
+  // Remove it with the 0 timeout otherwise the dragend event is lost (because the note does not exist)
+  setTimeout(() => note.remove(), 0);
+}
+
+function moveNoteToContent(note, touch) {
+  // Compute destination position
+  // NOTE: this does account for scrolling of content, but not of scrolling in a parent element
+  // Copy note and append it to sidebar
+  var data = {
+    id: note.getAttribute("id"),
+    fileId: note.getAttribute("data-fileid"),
+    startOffset: note.getAttribute("data-startoffset"),
+    endOffset: note.getAttribute("data-endoffset"),
+    startIndex: note.getAttribute("data-startindex"),
+    endIndex: note.getAttribute("data-endoffset"),
+    passage: note.firstElementChild.nextSibling.firstElementChild.innerText,
+    annotation: note.lastElementChild.lastElementChild.innerText,
+  };
+  console.log(data);
+
+  $("#snaptarget").append(createPassage(data, touch));
 
   // Remove it with the 0 timeout otherwise the dragend event is lost (because the note does not exist)
   setTimeout(() => note.remove(), 0);
@@ -285,7 +311,7 @@ function moveNoteToContent(note, sidebar, ev, dnd) {
 // Copy a note from a remote window to the sidebar
 function copyNoteToSidebar(xferData, sidebar, ev, dnd) {
   // Copy note and append it to sidebar
-  $("#sidebar").append(createPassage(xferData));
+  $("#sidebar").append(createPassage(xferData, false));
 }
 
 // Global holding the current drag-and-drop interaction, if any
@@ -515,3 +541,121 @@ $(function () {
     dnd ? dnd.drop(ev) : console.warn("spurious drop event")
   );
 });
+
+//regarding touch events
+var floatingEl = null;
+var passage = null;
+var clientX = 0;
+var clientY = 0;
+var canvasEl = null;
+var lastX = 0;
+var lastY = 0;
+
+function handleStart(evt) {
+  if (evt.target !== this) return;
+  evt.stopPropagation();
+  evt.preventDefault();
+  var path = evt.path;
+  path.forEach((element) => {
+    try {
+      if (element.getAttribute("class") == "passage draggable") {
+        floatingEl = element.cloneNode(true);
+      }
+    } catch (error) {}
+  });
+  floatingEl.removeEventListener("touchstart", handleStart);
+  floatingEl.removeEventListener("touchend", handleEnd);
+  floatingEl.removeEventListener("touchcancel", handleCancel);
+  floatingEl.removeEventListener("touchmove", handleMove);
+  floatingEl.style.position = "absolute";
+  floatingEl.style.opacity = "0.7";
+  floatingEl.style.transform = "scale(1)";
+  clientX = evt.touches[0].pageX;
+  clientY = evt.touches[0].pageY;
+  floatingEl.style.top = clientY + "px";
+  floatingEl.style.left = clientX + "px";
+  document.body.appendChild(floatingEl);
+}
+
+function handleEnd(evt) {
+  if (evt.target !== this) return;
+  evt.stopPropagation();
+  evt.preventDefault();
+  var path = evt.path;
+  path.forEach((element) => {
+    try {
+      if (element.getAttribute("class") == "passage draggable") {
+        passage = element;
+      }
+    } catch (error) {}
+  });
+  var canvas = document.getElementById("snaptarget");
+  if (
+    clientX >= canvas.offsetLeft &&
+    clientX <= canvas.offsetLeft + canvas.offsetWidth &&
+    clientY >= canvas.offsetTop &&
+    clientY <= canvas.offsetTop + canvas.offsetHeight
+  ) {
+    moveNoteToContent(passage, true);
+  }
+  floatingEl.remove();
+  floatingEl = null;
+  passage = null;
+}
+
+function handleMove(evt) {
+  if (evt.target !== this) return;
+  evt.stopPropagation();
+  evt.preventDefault();
+  console.log("move");
+  clientX = evt.touches[0].pageX;
+  clientY = evt.touches[0].pageY;
+  console.log("touchpos : " + clientX + "  " + clientY);
+  floatingEl.style.top = clientY + "px";
+  floatingEl.style.left = clientX + "px";
+}
+
+function handleCancel(evt) {
+  evt.preventDefault();
+  console.log("cancel");
+}
+
+function canvasStart(evt) {
+  if (evt.target !== this) return;
+  evt.preventDefault();
+  var path = evt.path;
+  path.forEach((element) => {
+    try {
+      if (element.getAttribute("class") == "passage draggable") {
+        canvasEl = $(element);
+      }
+    } catch (error) {}
+  });
+  let offset = canvasEl.offset();
+  lastX = offset.left;
+  lastY = offset.top;
+}
+
+function canvasMove(evt) {
+  if (evt.target !== this) return;
+  evt.preventDefault();
+  // clientX = evt.touches[0].pageX;
+  // clientY = evt.touches[0].pageY;
+  // canvasEl.style.top = clientY + "px";
+  // canvasEl.style.left = clientX + "px";
+
+  let offset = canvasEl.offset();
+  offset.left += evt.touches[0].pageX - lastX;
+  offset.top += evt.touches[0].pageY - lastY;
+  canvasEl.offset(offset);
+  lastX = offset.left;
+  lastY = offset.top;
+
+  console.log(lastX);
+}
+
+function canvasCancel(evt) {}
+
+function canvasEnd(evt) {
+  canvasEl = null;
+}
