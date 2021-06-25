@@ -118,7 +118,8 @@ function createPassage(data) {
     document.createTextNode(String.fromCharCode(10005))
   );
 
-  draghandlebutton.onclick = () => {
+  draghandlebutton.onclick = (e) => {
+    e.stopPropagation();
     passage.remove();
     for (let i = 0; i < allPassages.length; i++) {
       if (allPassages[i] == passage) {
