@@ -367,6 +367,14 @@ class HighlightBlot extends Inline {
       unhighlight(id);
     });
 
+    node.addEventListener("touchstart", function (event) {
+      highlight(id);
+    });
+
+    node.addEventListener("touchend", function (event) {
+      unhighlight(id);
+    });
+
     return node;
   }
 }
@@ -942,26 +950,25 @@ $(function () {
   );
 });
 
-let contentTransfer;
-
-function getCursorPosition() {
-  var range = quill.getSelection();
-  if (range) {
-    if (range.length == 0) {
-      console.log("User cursor is at index", range.index);
-      return range.index;
-    } else {
-      var text = quill.getText(range.index, range.length);
-      console.log("User has highlighted: ", text);
-    }
-  } else {
-    console.log("User cursor is not in editor");
-  }
-}
+//regarding touch events
+let floatingEl;
+let passage;
 
 function handleStart(evt) {
   evt.preventDefault();
-  console.log("touch");
+  var path = evt.path;
+  path.forEach((element) => {
+    try {
+      if (element.getAttribute("class") == "passage draggable") {
+        passage = element;
+        floatingEl = element.cloneNode(true);
+      }
+    } catch (error) {}
+  });
+  document.body.appendChild(floatingEl);
+  floatingEl.style.position = "absolute";
+  floatingEl.style.top = evt.clientY;
+  floatingEl.style.left = evt.clientX;
 }
 
 function handleStart(evt) {
@@ -970,19 +977,14 @@ function handleStart(evt) {
 
 function handleEnd(evt) {
   console.log("touch end");
-  var path = evt.path;
-  var passage;
-  path.forEach((element) => {
-    try {
-      if (element.getAttribute("class") == "passage draggable")
-        passage = element;
-    } catch (error) {}
-  });
   moveNoteToEditor(passage);
+  floatingEl.remove();
 }
 
 function handleMove(evt) {
   console.log("move");
+  floatingEl.style.top = evt.clientY;
+  floatingEl.style.left = evt.clientX;
 }
 
 function handleCancel(evt) {
