@@ -291,10 +291,10 @@ function createPassage(data) {
   passage.appendChild(annotationArea);
   allPassages.push(passage);
 
-  passage.addEventListener("touchstart", handleStart);
-  passage.addEventListener("touchend", handleEnd);
-  passage.addEventListener("touchcancel", handleCancel);
-  passage.addEventListener("touchmove", handleMove);
+  draghandle.addEventListener("touchstart", handleStart);
+  draghandle.addEventListener("touchend", handleEnd);
+  draghandle.addEventListener("touchcancel", handleCancel);
+  draghandle.addEventListener("touchmove", handleMove);
 
   return passage;
 }
@@ -671,42 +671,45 @@ function getPassageContent(note) {
 }
 
 function moveNoteToEditor(note, sidebar, ev, dnd) {
-  iterId();
-  const cursor = getCursorPosition();
+  try {
+    iterId();
+    const cursor = getCursorPosition();
 
-  // quill.format('highlight', note);
-  var highlength = 0;
-  scrollPositions.push({
-    passageId: note.id,
-    id: iter,
-    scrollPos: document.getElementById("sidebar").scrollTop,
-  });
-  if (note.lastElementChild.innerText.length != 0) {
-    quill.insertText(getCursorPosition(), " [");
+    // quill.format('highlight', note);
+    var highlength = 0;
+    scrollPositions.push({
+      passageId: note.id,
+      id: iter,
+      scrollPos: document.getElementById("sidebar").scrollTop,
+    });
+    if (note.lastElementChild.innerText.length != 0) {
+      quill.insertText(getCursorPosition(), " [");
+      quill.insertText(
+        getCursorPosition(),
+        note.lastElementChild.lastElementChild.lastElementChild.innerText,
+        true
+      );
+      quill.insertText(getCursorPosition(), "] ");
+      highlength = 4;
+    }
     quill.insertText(
       getCursorPosition(),
-      note.lastElementChild.lastElementChild.lastElementChild.innerText,
+      note.firstElementChild.nextElementSibling.firstElementChild.innerText,
       true
     );
-    quill.insertText(getCursorPosition(), "] ");
-    highlength = 4;
-  }
-  quill.insertText(
-    getCursorPosition(),
-    note.firstElementChild.nextElementSibling.firstElementChild.innerText,
-    true
-  );
-  quill.insertText(getCursorPosition(), " ");
+    quill.insertText(getCursorPosition(), " ");
 
-  quill.formatText(
-    cursor +
-      note.lastElementChild.lastElementChild.lastElementChild.innerText.length +
-      highlength,
-    note.firstElementChild.nextElementSibling.firstElementChild.innerText
-      .length,
-    "highlight",
-    note.id
-  );
+    quill.formatText(
+      cursor +
+        note.lastElementChild.lastElementChild.lastElementChild.innerText
+          .length +
+        highlength,
+      note.firstElementChild.nextElementSibling.firstElementChild.innerText
+        .length,
+      "highlight",
+      note.id
+    );
+  } catch (error) {}
 }
 
 // Copy a note from a remote window to the sidebar
@@ -953,6 +956,8 @@ $(function () {
 //regarding touch events
 var floatingEl;
 var passage;
+var clientX;
+var clientY;
 
 function handleStart(evt) {
   evt.preventDefault();
@@ -971,7 +976,7 @@ function handleStart(evt) {
   floatingEl.style.position = "absolute";
   clientX = evt.touches[0].clientX;
   clientY = evt.touches[0].clientY;
-  floatingEl.style.top = clientY + "px";
+  floatingEl.style.top = clientY - floatingEl.style.height + "px";
   floatingEl.style.left = clientX + "px";
   document.body.appendChild(floatingEl);
 }
@@ -985,9 +990,18 @@ function handleEnd(evt) {
       }
     } catch (error) {}
   });
-  moveNoteToEditor(passage);
+  var editor = document.getElementById("editor");
+  if (
+    clientX >= editor.offsetLeft &&
+    clientX <= editor.offsetLeft + editor.offsetWidth &&
+    clientY >= editor.offsetTop &&
+    clientY <= editor.offsetTop + editor.offsetHeight
+  ) {
+    moveNoteToEditor(passage);
+  }
   floatingEl.remove();
   floatingEl = null;
+  passage = null;
 }
 
 function handleMove(evt) {
@@ -997,10 +1011,6 @@ function handleMove(evt) {
   console.log("touchpos : " + clientX + "  " + clientY);
   floatingEl.style.top = clientY + "px";
   floatingEl.style.left = clientX + "px";
-
-  console.log(
-    "floatingdiv : " + floatingEl.style.top + " " + floatingEl.style.left
-  );
 }
 
 function handleCancel(evt) {
