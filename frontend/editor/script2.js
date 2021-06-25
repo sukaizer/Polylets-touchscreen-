@@ -984,8 +984,8 @@ function handleStart(evt) {
   floatingEl.style.position = "absolute";
   floatingEl.style.opacity = "0.7";
   floatingEl.style.transform = "scale(0.5)";
-  clientX = evt.touches[0].clientX;
-  clientY = evt.touches[0].clientY;
+  clientX = evt.touches[0].pageX;
+  clientY = evt.touches[0].pageY;
   floatingEl.style.top = clientY + "px";
   floatingEl.style.left = clientX + "px";
   document.body.appendChild(floatingEl);
@@ -1022,8 +1022,8 @@ function handleMove(evt) {
   evt.stopPropagation();
   evt.preventDefault();
   console.log("move");
-  clientX = evt.touches[0].clientX;
-  clientY = evt.touches[0].clientY;
+  clientX = evt.touches[0].pageX;
+  clientY = evt.touches[0].pageY;
   console.log("touchpos : " + clientX + "  " + clientY);
   floatingEl.style.top = clientY + "px";
   floatingEl.style.left = clientX + "px";
