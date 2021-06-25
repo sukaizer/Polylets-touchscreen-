@@ -966,6 +966,8 @@ var clientX;
 var clientY;
 
 function handleStart(evt) {
+  if (evt.target !== this) return;
+  evt.stopPropagation();
   evt.preventDefault();
   var path = evt.path;
   path.forEach((element) => {
@@ -990,6 +992,8 @@ function handleStart(evt) {
 }
 
 function handleEnd(evt) {
+  if (evt.target !== this) return;
+  evt.stopPropagation();
   evt.preventDefault();
   var path = evt.path;
   path.forEach((element) => {
@@ -1014,6 +1018,8 @@ function handleEnd(evt) {
 }
 
 function handleMove(evt) {
+  if (evt.target !== this) return;
+  evt.stopPropagation();
   evt.preventDefault();
   console.log("move");
   clientX = evt.touches[0].clientX;
