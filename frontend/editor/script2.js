@@ -960,10 +960,10 @@ $(function () {
 });
 
 //regarding touch events
-var floatingEl;
-var passage;
-var clientX;
-var clientY;
+var floatingEl = null;
+var passage = null;
+var clientX = null;
+var clientY = null;
 
 function handleStart(evt) {
   if (evt.target !== this) return;
@@ -983,10 +983,10 @@ function handleStart(evt) {
   floatingEl.removeEventListener("touchmove", handleMove);
   floatingEl.style.position = "absolute";
   floatingEl.style.opacity = "0.7";
-  floatingEl.style.transform = "scale(1)";
+  floatingEl.style.transform = "scale(0.5)";
   clientX = evt.touches[0].clientX;
   clientY = evt.touches[0].clientY;
-  floatingEl.style.top = clientY - floatingEl.style.height + "px";
+  floatingEl.style.top = clientY + "px";
   floatingEl.style.left = clientX + "px";
   document.body.appendChild(floatingEl);
 }
